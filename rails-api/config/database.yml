@@ -5,15 +5,19 @@ default: &default
 
 development:
   <<: *default
-  database: receive_finder_dev
+  database: recipes_finder_dev
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: receive_finder_test
+  database: recipes_finder_test
+  host: localhost
+  username: recipes_finder_test
+  password: recipes_finder_test
+  port: 65432
 
 production:
   <<: *default
-  database: receive_finder_prod
+  database: recipes_finder_prod
