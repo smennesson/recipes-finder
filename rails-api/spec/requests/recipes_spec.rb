@@ -30,16 +30,46 @@ RSpec.describe 'Recipes', type: :request do
     end
 
     context 'with an ingredient as input' do
-      let!(:recipes) { create_list(:recipe, 2) }
-      let!(:matching_recipe1) { create(:recipe, ingredients: ['1 banana'], rate: 3) }
-      let!(:matching_recipe2) { create(:recipe, ingredients: ['2 bananas'], rate: 2) }
+      let!(:recipes) { create_list(:recipe, 2, ingredients: ['2 tomates']) }
+      let!(:matching_recipe1) { create(:recipe, ingredients: ['1 banane'], rate: 3) }
+      let!(:matching_recipe2) { create(:recipe, ingredients: ['2 bananes'], rate: 2) }
 
       it 'gives recipes matching the given ingredient' do
-        get '/recipes', params: { ingredients: ['banana'] }
+        get '/recipes', params: { ingredients: ['banane'] }
         expect(response).to have_http_status(:success)
         response_body = JSON.parse(response.body, symbolize_names: true)
         expect(response_body[:recipes].map { |recipe| recipe[:id] })
           .to eq([matching_recipe1.id, matching_recipe2.id])
+      end
+    end
+
+    context 'with several ingredients as input' do
+      let!(:recipe1) { create(:recipe, ingredients: ['1 oeuf']) }
+      let!(:recipe2) { create(:recipe, ingredients: ['2 bananes']) }
+      let!(:recipe3) { create(:recipe, ingredients: ['1 oeuf', '2 bananes']) }
+
+      it 'gives recipes matching all given ingredients' do
+        get '/recipes', params: { ingredients: %w[banane oeuf] }
+        expect(response).to have_http_status(:success)
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body[:recipes].length).to eq(1)
+        expect(response_body[:recipes][0][:id]).to eq(recipe3.id)
+      end
+    end
+
+    context 'with special characters' do
+      ActiveRecord::Base.logger = Logger.new(STDOUT)
+
+      let!(:recipe1) { create(:recipe, ingredients: ['1 oeuf']) }
+      let!(:recipe2) { create(:recipe, ingredients: ['2 bananes']) }
+      let!(:recipe3) { create(:recipe, ingredients: ['1 oeuf', '2 bananes']) }
+
+      it 'sanitizes strings and gives recipes matching all given ingredients' do
+        get '/recipes', params: { ingredients: ['banane &\'",;', 'oeuf'] }
+        expect(response).to have_http_status(:success)
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body[:recipes].length).to eq(1)
+        expect(response_body[:recipes][0][:id]).to eq(recipe3.id)
       end
     end
   end
