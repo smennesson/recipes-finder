@@ -8,21 +8,23 @@ RSpec.describe 'Recipes', type: :request do
       it 'gives an empty list' do
         get '/recipes'
         expect(response).to have_http_status(:success)
-        response_body = JSON.parse(response.body)
-        expect(response_body).to eq([])
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body).to be_an_instance_of(Hash)
+        expect(response_body[:recipes]).to eq([])
       end
     end
 
     context 'with no input arguments' do
-      before { create_list(:recipe, RecipesController::MAX_OUTPUT_RECIPES + 1) }
+      let(:max_recipes) { RecipesController::MAX_OUTPUT_RECIPES }
+      let!(:recipes) { create_list(:recipe, max_recipes + 1) }
 
       it 'gives top ranking recipes' do
-        pending 'Not yet implemented'
         get '/recipes'
         expect(response).to have_http_status(:success)
-        response_body = JSON.parse(response.body)
-        expect(response_body).to be_an_instance_of(Array)
-        expect(response_body.length).to eq(RecipesController::MAX_OUTPUT_RECIPES)
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body[:recipes].length).to eq(max_recipes)
+        expect(response_body[:recipes].map { |recipe| recipe[:id] })
+          .to eq(recipes.sort_by(&:rate).reverse.take(max_recipes).map(&:id))
       end
     end
   end

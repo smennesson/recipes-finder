@@ -4,6 +4,7 @@ class RecipesController < ApplicationController
   MAX_OUTPUT_RECIPES = 5
 
   def index
-    render json: []
+    recipes = Recipe.order(rate: :desc).limit(MAX_OUTPUT_RECIPES).all
+    render json: { recipes: recipes }
   end
 end
