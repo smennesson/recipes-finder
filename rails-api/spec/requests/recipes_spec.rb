@@ -17,7 +17,8 @@ RSpec.describe 'Recipes', type: :request do
     end
 
     context 'with no input arguments' do
-      let!(:recipes) { create_list(:recipe, max_recipes + 1) }
+      let!(:recipes) { create_list(:recipe, max_recipes) }
+      let!(:undesired_recipe) { create(:recipe, rate: 0) }
 
       it 'gives top ranking recipes' do
         get '/recipes'
@@ -25,7 +26,7 @@ RSpec.describe 'Recipes', type: :request do
         response_body = JSON.parse(response.body, symbolize_names: true)
         expect(response_body[:recipes].length).to eq(max_recipes)
         expect(response_body[:recipes].map { |recipe| recipe[:id] })
-          .to eq(recipes.sort_by(&:rate).reverse.take(max_recipes).map(&:id))
+          .to eq(recipes.sort_by(&:rate).reverse.map(&:id))
       end
     end
 
@@ -58,8 +59,6 @@ RSpec.describe 'Recipes', type: :request do
     end
 
     context 'with special characters' do
-      ActiveRecord::Base.logger = Logger.new(STDOUT)
-
       let!(:recipe1) { create(:recipe, ingredients: ['1 oeuf']) }
       let!(:recipe2) { create(:recipe, ingredients: ['2 bananes']) }
       let!(:recipe3) { create(:recipe, ingredients: ['1 oeuf', '2 bananes']) }

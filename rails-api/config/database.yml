@@ -6,6 +6,10 @@ default: &default
 development:
   <<: *default
   database: recipes_finder_dev
+  host: localhost
+  username: recipes_finder_dev
+  password: recipes_finder_dev
+  port: 65433
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
