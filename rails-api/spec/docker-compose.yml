@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  db-recipes-finder:
+      image: postgres:16.2
+      environment:
+        POSTGRES_DB: recipes_finder_test
+        POSTGRES_USER: recipes_finder_test
+        POSTGRES_PASSWORD: recipes_finder_test
+      ports:
+        - '65432:5432'
+      volumes:
+        - pg_recipes_finder_test_data:/var/lib/postgresql/data
+
+volumes:
+  pg_recipes_finder_test_data:
