@@ -1,7 +1,10 @@
-.PHONY: tests
-tests:
+.PHONY: prepare_tests
+prepare_tests:
 	bundler exec rake db:environment:set RAILS_ENV=test
 	bundler exec rake db:schema:load db:migrate RAILS_ENV=test
+
+.PHONY: tests
+tests:
 	bundler exec rspec
 
 .PHONY: start_docker_compose
