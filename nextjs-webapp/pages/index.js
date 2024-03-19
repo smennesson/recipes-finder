@@ -16,8 +16,8 @@ export function Recipe({ recipe }) {
       <h2 className="text-l font-medium">Note: {recipe.rate ? recipe.rate : 'Aucune'}</h2>
       <h2 className="text-l font-medium">Ingrédients</h2>
       <ul className="list-disc list-inside">
-        {recipe.ingredients.map((ingredient) => (
-            <li key={ingredient}>{ingredient}</li>
+        {recipe.ingredients.map((ingredient, index) => (
+            <li key={recipe.name + ingredient + index}>{ingredient}</li>
           ))}
       </ul>
     </div>
@@ -51,7 +51,7 @@ export default function Home() {
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(onSubmit)}>
         <p><span>Cherche des recettes à partir d'ingrédients</span></p>
         <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" for="username">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
         Ingredients
         </label>
         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" defaultValue="noix" {...register("ingredients", { required: true })} />
