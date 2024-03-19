@@ -33,14 +33,15 @@ RSpec.describe 'Recipes', type: :request do
     context 'with an ingredient as input' do
       let!(:recipes) { create_list(:recipe, 2, ingredients: ['2 tomates']) }
       let!(:matching_recipe1) { create(:recipe, ingredients: ['1 banane'], rate: 3) }
-      let!(:matching_recipe2) { create(:recipe, ingredients: ['2 bananes'], rate: 2) }
+      let!(:matching_recipe2) { create(:recipe, ingredients: ['4 bananes'], rate: nil) }
+      let!(:matching_recipe3) { create(:recipe, ingredients: ['2 bananes'], rate: 2) }
 
-      it 'gives recipes matching the given ingredient' do
+      it 'gives recipes matching the given ingredient, ordered by rate' do
         get '/recipes', params: { ingredients: ['banane'] }
         expect(response).to have_http_status(:success)
         response_body = JSON.parse(response.body, symbolize_names: true)
         expect(response_body[:recipes].map { |recipe| recipe[:id] })
-          .to eq([matching_recipe1.id, matching_recipe2.id])
+          .to eq([matching_recipe1.id, matching_recipe3.id, matching_recipe2.id])
       end
     end
 
