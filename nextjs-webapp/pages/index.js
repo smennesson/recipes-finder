@@ -34,7 +34,8 @@ export default function Home() {
 
   const [recipes, setRecipes] = React.useState([]);
   const onSubmit = (data) => {
-    axios.get('http://localhost:3001/recipes',  { params: { ingredients: data.ingredients.split(' ') } })
+    const apiDomain = process.env.NODE_ENV == 'production' ? 'https://recipes-finder-api.fly.dev/' : 'http://localhost:3001';
+    axios.get(`${apiDomain}/recipes`,  { params: { ingredients: data.ingredients.split(' ') } })
       .then(function (response) {
         setRecipes(response.data.recipes);
       })
@@ -49,7 +50,7 @@ export default function Home() {
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(onSubmit)}>
-        <p><span>Cherche des recettes à partir d'ingrédients</span></p>
+        <p><span>Cherche des recettes à partir d&apos;ingrédients</span></p>
         <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
         Ingredients
