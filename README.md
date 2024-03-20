@@ -1,43 +1,28 @@
 # receipe-finder
 
-## Rails API
+## Introduction
+This project is composed of two sub-projects:
+* `rails-api`: server API giving a list of recipes from ingredients
+* `nextjs-webapp` : a nextJS application calling the API and displaying results.
 
-Rails application proving an API giving a list of recipes matching given ingredients.
+Check readme file in sub-folders for additional details.
 
-### Running tests locally
+## Hosting
 
-Run the following command from the `rails-api` folder.
+The application is hosted on Fly.io, and can be accessed on the following URLs:
+* API: https://recipes-finder-api.fly.dev/recipes
+* Web App: https://recipe-finder-webapp.fly.dev
 
-Start the database (requires Docker):
+WARNING: there is currently a waiting time of several seconds the first time the API
+is called after an inactivity period. The web application doesn't implement a loader
+yet so the web app may appear frozen during this waiting time.
 
-```
-make start_docker_compose
-```
+## Application code
 
-Prepare the test suite if needed:
-
-```
-make prepare_tests
-```
-
-Launch the test suite:
-
-```
-make tests
-```
-
-### Importing recipes to development database
-
-Reset the development database if necessary:
-
-```
-make reset_dev_db
-```
-
-Import the recipes from the `recipes-fr.json` file:
-
-```
-RAILS_ENV=development bundle exec rake 'recipe_importer:import_all[path/to/recipes-fr.json]'
-```
-
-Note: the English JSON file isn't supported.
+Most of the application code can be found in the following files:
+* API code: `rails-api/app/controllers/recipes_controller.rb`
+* Recipes importer: `rails-api/lib/tasks/recipe_importer.rake`
+* Database model: `rails-api/db/schema.rb`
+* API tests: `rails-api/spec/requests/recipes_spec.rb`
+* Importer tests: `rails-api/spec/tasks/recipe_importer_spec.rb`
+* Web App code: `nextjs-webapp/pages/index.js`

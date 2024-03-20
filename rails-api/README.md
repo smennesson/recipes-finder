@@ -1,24 +1,64 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This Rails application provides an API giving a list of recipes matching given ingredients.
 
-Things you may want to cover:
+## API description
 
-* Ruby version
+```
+# Get a list of recipes ordered by rating:
+GET /recipes
 
-* System dependencies
+# Get a list of recipes matching given ingredients, ordered by rating:
+GET /recipes?ingredients[]=firstIngredient&ingredients[]=secondIngredient
+```
 
-* Configuration
+## Running tests locally
 
-* Database creation
+Run the following command from the `rails-api` folder.
 
-* Database initialization
+Start the database (requires Docker):
 
-* How to run the test suite
+```
+make start_docker_compose
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+Prepare the test suite if needed:
 
-* Deployment instructions
+```
+make prepare_tests
+```
 
-* ...
+Launch the test suite:
+
+```
+make tests
+```
+
+## Importing recipes to development database
+
+Reset the development database if necessary:
+
+```
+make reset_dev_db
+```
+
+Import the recipes from the `recipes-fr.json` file:
+
+```
+RAILS_ENV=development bundle exec rake 'recipe_importer:import_all[path/to/recipes-fr.json]'
+```
+
+Note: the English JSON file isn't supported.
+
+## Running the server in local
+
+Start the database (requires Docker):
+
+```
+make start_docker_compose
+```
+
+Start the server:
+```
+bundle exec rails s
+```
